@@ -59,12 +59,4 @@ def test_fcs_type():
 def test_fcs_type():
     assert ('fcstwo', 'X') == type_translation('fcsii')
 
-def test_append_fin():
-    key_value_tuples = []
-    append_fin('fins', '2+1')
-    assert ('otherfin', 'X') in key_value_tuples
-
-def test_append_fin():
-    key_value_tuples = []
-    append_fin('fins', '2+1')
-    assert ('fins', '2+1') in key_value_tuples
+def 

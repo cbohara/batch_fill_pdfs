@@ -5,9 +5,6 @@ import csv
 from fdfgen import forge_fdf
 
 
-key_value_tuples = []
-
-
 def fin_translation(fin_value):
     if fin_value == '1':
         return ('single', 'X')
@@ -21,16 +18,6 @@ def fin_translation(fin_value):
         return ('fivefin', 'X')
     else:
         return ('otherfin', 'X')
-
-
-def append_fin(header, value):
-    fin_tuple = fin_translation(value)
-    if fin_tuple[0] == 'otherfin':
-        key_value_tuples.append(fin_tuple)
-        print(header, value)
-        key_value_tuples.append((header, value))
-    else:
-        key_value_tuples.append(fin_tuple)
 
 
 def tail_translation(tail_value):
@@ -65,8 +52,30 @@ def type_translation(type_value):
         return ('othertype', 'X')
 
 
-def process_csv(csv_file):
-    csv_data = csv.reader(open(csv_file))
+def generate_key_value_tuples(header):
+    key_value_tuples = []
+    for i in range(len(header)):
+        value = row[i].strip()
+        if header[i] == 'fins':
+            fin_tuple = fin_translation(value)
+            if fin_tuple[0] == 'otherfin':
+                key_value_tuples.append(fin_tuple)
+                key_value_tuples.append((header, value))
+            else:
+                key_value_tuples.append(fin_tuple)
+        elif header[i] == 'tail':
+            tail_tuple = tail_translation(value.lower())
+            key_value_tuples.append(tail_tuple)
+        elif header[i] == 'or':
+            if value:
+                key_value_tuples.append(('or', 'X'))
+                key_value_tuples.append(('ortext', value))
+        else:
+            key_value_tuples.append((header, value))
+    return key_value_tuples
+
+
+def process_csv(csv_data):
     header = []
     output_data = []
     for row_number, row in enumerate(csv_data):
@@ -76,20 +85,7 @@ def process_csv(csv_file):
             header = row
             header = [word.lower().strip() for word in header]
             continue
-
-        for i in range(len(header)):
-            value = row[i].strip()
-            if header[i] == 'fins':
-                append_fin(header[i], value)
-            elif header[i] == 'tail':
-                tail_tuple = tail_translation(value.lower())
-                key_value_tuples.append(tail_tuple)
-            elif header[i] == 'or':
-                if value:
-                    key_value_tuples.append(('or', 'X'))
-                    key_value_tuples.append(('ortext', value))
-            else:
-                key_value_tuples.append((header, value))
+        key_value_tuples = generate_key_value_tuples(header)
         output_data.append(key_value_tuples)
     return output_data
 
@@ -104,7 +100,7 @@ def fill_pdf_template(row, pdf_template, output_file):
     os.remove(tmp_file)
 
 
-def main(args):
+if __name__ == "__main__":
     """
     Batch fill pdf template with data from csv file
     """
@@ -114,8 +110,8 @@ def main(args):
     except IndexError:
         print("python3 fill.py pdf_template csv_file")
     else:
-        data = process_csv(csv_file)
-
+        csv_data = csv.reader(open(csv_file))
+        data = process_csv(csv_data)
         output_dir = os.path.join(os.getcwd(), 'output')
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -124,9 +120,5 @@ def main(args):
             orderid = row[3][1]
             output_path = os.path.join(output_dir, orderid)
             output_file = output_path + ".pdf"
-            fill_pdf_template(row, pdf_template, output_file)
+#            fill_pdf_template(row, pdf_template, output_file)
             print("Generated {0}.pdf".format(orderid))
-
-
-if __name__ == "__main__":
-    sys.exit(main(sys.argv))
