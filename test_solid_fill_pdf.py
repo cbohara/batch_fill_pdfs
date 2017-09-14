@@ -2,7 +2,6 @@ import pytest
 from solid_fill_pdf import fin_translation
 from solid_fill_pdf import tail_translation
 from solid_fill_pdf import type_translation
-from solid_fill_pdf import append_fin
 
 
 def test_single_fin():
@@ -58,5 +57,3 @@ def test_fcs_type():
 
 def test_fcs_type():
     assert ('fcstwo', 'X') == type_translation('fcsii')
-
-def 
