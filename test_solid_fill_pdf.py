@@ -57,3 +57,4 @@ def test_fcs_type():
 
 def test_fcs_type():
     assert ('fcstwo', 'X') == type_translation('fcsii')
+
