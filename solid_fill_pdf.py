@@ -110,8 +110,9 @@ if __name__ == "__main__":
     try:
         pdf_template = sys.argv[1]
         csv_file = sys.argv[2]
+        input_id = sys.argv[3]
     except IndexError:
-        print("python3 fill.py pdf_template csv_file")
+        print("python3 solid_fill_pdf.py pdf_template csv_file ")
     else:
         with open(csv_file) as f:
             csv_data = csv.reader(f)
@@ -122,8 +123,9 @@ if __name__ == "__main__":
                 os.makedirs(output_dir)
 
             for row in data:
-                orderid = row[3][1]
-                output_path = os.path.join(output_dir, orderid)
-                output_file = output_path + ".pdf"
-                fill_pdf_template(row, pdf_template, output_file)
-                print("Generated {0}.pdf".format(orderid))
+                if row[0][1] == input_id:
+                    orderid = row[3][1]
+                    output_path = os.path.join(output_dir, orderid)
+                    output_file = output_path + ".pdf"
+                    fill_pdf_template(row, pdf_template, output_file)
+                    print("Generated {0}.pdf".format(orderid))
