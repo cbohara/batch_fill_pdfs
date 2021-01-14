@@ -1,4 +1,6 @@
+.idea/
 .cache/
 __pycache__/
 data.csv
 output/
+pdf/
