@@ -52,7 +52,6 @@ python3 -m venv venv
 Install the python module that will take care of filling in the pdf.  Copy and paste the line below into your terminal and hit enter:
 
 ```
-python3 -m 
 pip3 install fdfgen
 ```
 
